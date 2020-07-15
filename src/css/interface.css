@@ -1,0 +1,279 @@
+/* General Style */
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,700);
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css);
+*, *:after, *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* clearfix */
+.clearfix:before, .clearfix:after {
+    content: " ";
+    display: table;
+}
+.clearfix:after {
+    clear: both;
+}
+
+a {
+    color: #888;
+    text-decoration: none;
+}
+a:hover,
+a:active {
+    color: #333;
+}
+/* Header Style */
+.main,
+.container > header {
+    margin: 0 auto;
+    padding: 2em;
+}
+.container > header {
+    text-align: center;
+}
+.container > header h1 {
+    font-size: 2.625em;
+    line-height: 1.3;
+    margin: 0;
+    font-weight: 300;
+}
+.container > header span {
+    display: block;
+    font-size: 60%;
+    opacity: 0.5;
+    padding: 0 0 0.6em 0.1em;
+}
+
+.container {
+    height: 100%;
+    position: relative;
+}
+.container > section {
+    margin: 0 auto;
+    padding: 5em 0.5em;
+    text-align: center;
+    color: #fff;
+}
+.container > section div {
+    position: relative;
+    margin: 0;
+    z-index: 1;
+}
+.container > section div.text {
+    font-size: 1.4em;
+}
+.no-touch .note-touch {
+    display: none;
+}
+
+.color-pattern-3 {
+    background: #ffffff;
+}
+
+/* General button style (reset) */
+.button {
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: none;
+    cursor: pointer;
+    padding: 25px 80px;
+    display: block;
+    margin: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    outline: none;
+    position: relative;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.button:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+/* Button 3 */
+.button-3 {
+    background: #646d82;
+    color: #fff;
+}
+.button-3:hover {
+    background: #7c88a2;
+}
+.button-3:active {
+    background: #7c88a2;
+    top: 2px;
+}
+.button-3>.fa {
+    position: absolute;
+    height: 100%;
+    left: 0;
+    top: 5px;
+    font-size: 110%;
+    width: 60px;
+}
+.button-3>.fa:before {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+/* Button 3e */
+.button-3e {
+    padding: 10px 100px 10px 10px;
+    overflow: hidden;
+    width: 250px;
+    border-radius: 20px;
+}
+.button-3e>.fa {
+    left: auto;
+    right: 0px;
+    z-index: 2;
+}
+.button-3e:after {
+    width: 30%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1;
+    right: 0;
+    top: 0;
+    margin: -5px 0 0 -5px;
+    -webkit-transform-origin: 0 0;
+    -webkit-transform: rotate(-20deg);
+    -moz-transform-origin: 0 0;
+    -moz-transform: rotate(-20deg);
+    -ms-transform-origin: 0 0;
+    -ms-transform: rotate(-20deg);
+    transform-origin: 0 0;
+    transform: rotate(-20deg);
+}
+.button-3e:hover:after {
+    width: 35%;
+}
+
+/* Special trash effect */
+.trash-effect {
+    position: relative;
+    max-width: 320px;
+    margin: 60px auto 0;
+}
+.trash-effect .icon-file {
+    font-size: 30px;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    left: 50%;
+    top: 50%;
+    margin: -45px 0 0 -25px;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    -webkit-transform: translateX(90px) translateY(20px) scale(1);
+    -moz-transform: translateX(90px) translateY(20px) scale(1);
+    -ms-transform: translateX(90px) translateY(20px) scale(1);
+    transform: translateX(90px) translateY(20px) scale(1);
+}
+.trash-effect .icon-file:nth-child(2) {
+    -webkit-transform: translateX(140px) translateY(-10px) scale(1);
+    -moz-transform: translateX(140px) translateY(-10px) scale(1);
+    -ms-transform: translateX(140px) translateY(-10px) scale(1);
+    transform: translateX(140px) translateY(-10px) scale(1);
+    -webkit-transition-delay: 0.1s;
+    -moz-transition-delay: 0.1s;
+    transition-delay: 0.1s;
+}
+.trash-effect .icon-file:nth-child(3) {
+    -webkit-transform: translateX(140px) translateY(50px) scale(1);
+    -moz-transform: translateX(140px) translateY(50px) scale(1);
+    -ms-transform: translateX(140px) translateY(50px) scale(1);
+    transform: translateX(140px) translateY(50px) scale(1);
+    -webkit-transition-delay: 0.2s;
+    -moz-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+}
+.trash-effect.trash-effect-active .icon-file {
+    -webkit-transform: translateX(-100px) translateY(-10px) scale(0);
+    -moz-transform: translateX(-100px) translateY(-10px) scale(0);
+    -ms-transform: translateX(-100px) translateY(-10px) scale(0);
+    transform: translateX(-100px) translateY(-10px) scale(0);
+}
+@-webkit-keyframes openTrash {
+    50% {
+        -webkit-transform: rotate(-35deg);
+    }
+    100% {
+        -webkit-transform: rotate(0deg);
+    }
+}
+@-moz-keyframes openTrash {
+    50% {
+        -moz-transform: rotate(-35deg);
+    }
+    100% {
+        -moz-transform: rotate(0deg);
+    }
+}
+@keyframes openTrash {
+    50% {
+        transform: rotate(-35deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.hide{
+    color: transparent;
+}
+
+.text {
+    font-family: sans-serif;
+    font: menu;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+#webcam-record{
+    background-color: #646d82;
+}
+
+html, body {
+    margin: 0!important;
+    padding: 0!important;
+}
+
+h1{
+    font-family: sans-serif;
+    font-size: 20px;
+    color: #646d82;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.col-md-12{
+    text-align: -webkit-center;
+}
+
+.row{
+    text-align: -webkit-center;
+}
+
+.icons-app{
+    width:20px; 
+    margin: 5px 10px 5px 10px;
+}
