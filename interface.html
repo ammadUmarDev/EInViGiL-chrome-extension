@@ -24,13 +24,14 @@
 
 <body>
     <div class="container app">
+
         <div class="row">
-            <h1>Invigilator</h1>
+            <h1>EInViGiL</h1>
         </div>
 
         <div class="row">
             <span>
-                <img class="icons-app"  src="assets/camera.png" alt="Camera">
+                <img class="icons-app" src="assets/camera.png" alt="Camera">
             </span>
             <span>
                 <img class="icons-app" src="assets/microphone.png" alt="Microphone">
@@ -43,83 +44,20 @@
         <div class="row">
             <div class="col-md-12">
                 <button id="btn-start-recording-video" class="button button-3 button-3e icon-arrow-right text">
-                    <i class="fa fa-play"></i>Start Invigilations</button>
+                    <i class="fa fa-play"></i>Start Invigilation</button>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-12">
                 <button id="btn-stop-recording-video" disabled class="button button-3 button-3e icon-arrow-right text">
-                    <i class="fa fa-stop"></i>Stop Invigilations<span class="hide">_</span></button>
+                    <i class="fa fa-stop"></i>End Invigilation</button>
             </div>
         </div>
     </div>
 
-    <script>
+    <script src="src/js/interface.js"></script>
 
-        //---------------------------------------------------------------------------------------------
-        // Video Audio Recording START-----------------------------------------------------------------
-        //---------------------------------------------------------------------------------------------
-
-        let video = document.querySelector('video');
-        let recorder; // globally accessible
-        let blob;
-        function captureCamera(callback) {
-            navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: true,
-            }).then(function (camera) {
-                callback(camera);
-            }).catch(function (error) {
-                alert('Unable to capture your camera. Please check console logs.');
-                console.error(error);
-            });
-        }
-
-        document.getElementById('btn-start-recording-video').onclick = function () {
-            this.disabled = true;
-            captureCamera(function (camera) {
-                recorder = RecordRTC(camera, {
-                    type: 'video',
-                    mimeType: 'video/mp4',
-                    recorderType: MediaStreamRecorder,
-                    timeSlice: 10000,
-                    ondataavailable: function (blob) {
-                        var timestamp = (new Date()).valueOf();
-                        fileName = timestamp + '.mp4';
-
-                        //replace with post to server
-                        invokeSaveAsDialog(blob, fileName);
-                    }
-                });
-
-                recorder.startRecording();
-                // release camera on stopRecording
-                recorder.camera = camera;
-                document.getElementById('btn-stop-recording-video').disabled = false;
-            });
-        };
-
-        document.getElementById('btn-stop-recording-video').onclick = function () {
-            this.disabled = true;
-            recorder.stopRecording(stopRecordingVideoCallback);
-        };
-
-        function stopRecordingVideoCallback() {
-            recorder.camera.stop();
-            blob = recorder.getBlob();
-            var timestamp = (new Date()).valueOf();
-            fileName = timestamp + '.mp4';
-            invokeSaveAsDialog(blob, fileName);
-            recorder.destroy();
-            recorder = null;
-        }
-
-    //---------------------------------------------------------------------------------------------
-    // Video Audio Recording END-------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------
-
-    </script>
 </body>
 
 </html>
