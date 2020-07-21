@@ -41,7 +41,7 @@ function gotStream(stream) {
             }
         }
 
-        if(enableTabCaptureAPIAudioOnly || (enableMicrophone && !enableCamera && !enableScreen) || (enableSpeakers && !enableScreen && !enableCamera)) {
+        if (enableTabCaptureAPIAudioOnly || (enableMicrophone && !enableCamera && !enableScreen) || (enableSpeakers && !enableScreen && !enableCamera)) {
             options.mimeType = 'audio/wav';
         }
     }
@@ -59,23 +59,23 @@ function gotStream(stream) {
 
     if (cameraStream) {
         var ignoreSecondPart = false;
-        
-        if(enableSpeakers && enableMicrophone) {
+
+        if (enableSpeakers && enableMicrophone) {
             var mixAudioStream = getMixedAudioStream([cameraStream, stream]);
-            if(mixAudioStream && getTracks(mixAudioStream, 'audio').length) {
+            if (mixAudioStream && getTracks(mixAudioStream, 'audio').length) {
                 ignoreSecondPart = true;
-                
+
                 var mixedTrack = getTracks(mixAudioStream, 'audio')[0];
                 stream.addTrack(mixedTrack);
-                getTracks(stream, 'audio').forEach(function(track) {
-                    if(track === mixedTrack) return;
+                getTracks(stream, 'audio').forEach(function (track) {
+                    if (track === mixedTrack) return;
                     stream.removeTrack(track);
                 });
             }
         }
 
-        if(!ignoreSecondPart) {
-            getTracks(cameraStream, 'audio').forEach(function(track) {
+        if (!ignoreSecondPart) {
+            getTracks(cameraStream, 'audio').forEach(function (track) {
                 stream.addTrack(track);
                 cameraStream.removeTrack(track);
             });
@@ -85,7 +85,7 @@ function gotStream(stream) {
     // fix https://github.com/muaz-khan/RecordRTC/issues/281
     options.ignoreMutedMedia = false;
 
-    if(options.mimeType === 'audio/wav') {
+    if (options.mimeType === 'audio/wav') {
         options.numberOfAudioChannels = 2;
         recorder = new StereoAudioRecorder(stream, options);
         recorder.streams = [stream];
@@ -121,7 +121,7 @@ function gotStream(stream) {
     isRecording = true;
     onRecording();
 
-    addStreamStopListener(recorder.streams[0], function() {
+    addStreamStopListener(recorder.streams[0], function () {
         stopScreenRecording();
     });
 
@@ -131,9 +131,12 @@ function gotStream(stream) {
     // tell website that recording is started
     startRecordingCallback();
 }
+var form = new FormData();
+
 
 function stopScreenRecording() {
-    if(!recorder || !isRecording) return;
+    console.log("in stopScreenRecording");
+    if (!recorder || !isRecording) return;
 
     if (timer) {
         clearTimeout(timer);
@@ -149,13 +152,13 @@ function stopScreenRecording() {
     });
 
     recorder.stop(function onStopRecording(blob, ignoreGetSeekableBlob) {
-        if(fixVideoSeekingIssues && recorder && !ignoreGetSeekableBlob) {
-            getSeekableBlob(recorder.blob, function(seekableBlob) {
+        if (fixVideoSeekingIssues && recorder && !ignoreGetSeekableBlob) {
+            getSeekableBlob(recorder.blob, function (seekableBlob) {
                 onStopRecording(seekableBlob, true);
             });
             return;
         }
-
+        console.log("in recorder.stop");
         var mimeType = 'video/webm';
         var fileExtension = 'webm';
 
@@ -173,7 +176,7 @@ function stopScreenRecording() {
             }
         }
 
-        if(enableTabCaptureAPIAudioOnly || (enableMicrophone && !enableCamera && !enableScreen) || (enableSpeakers && !enableScreen && !enableCamera)) {
+        if (enableTabCaptureAPIAudioOnly || (enableMicrophone && !enableCamera && !enableScreen) || (enableSpeakers && !enableScreen && !enableCamera)) {
             mimeType = 'audio/wav';
             fileExtension = 'wav';
         }
@@ -182,7 +185,7 @@ function stopScreenRecording() {
             type: mimeType
         });
 
-        if(ignoreGetSeekableBlob === true) {
+        if (ignoreGetSeekableBlob === true) {
             file = new File([blob], getFileName(fileExtension), {
                 type: mimeType
             });
@@ -195,21 +198,21 @@ function stopScreenRecording() {
         // var formatted = convertTime(timeDifference);
         // file.duration = formatted;
 
-        DiskStorage.StoreFile(file, function(response) {
+        DiskStorage.StoreFile(file, function (response) {
             try {
-                videoPlayers.forEach(function(player) {
+                videoPlayers.forEach(function (player) {
                     player.srcObject = null;
                 });
                 videoPlayers = [];
-            } catch (e) {}
+            } catch (e) { }
 
-            if(false && openPreviewOnStopRecording) {
+            if (false && openPreviewOnStopRecording) {
                 chrome.storage.sync.set({
                     isRecording: 'false', // for dropdown.js
                     openPreviewPage: 'false' // for previewing recorded video
-                }, function() {
+                }, function () {
                     // wait 100 milliseconds to make sure DiskStorage finished its job
-                    setTimeout(function() {
+                    setTimeout(function () {
                         // reset & reload to make sure we clear everything
                         setDefaults();
                         chrome.runtime.reload();
@@ -218,15 +221,15 @@ function stopScreenRecording() {
                 return;
             }
 
-            false && setTimeout(function() {
+            false && setTimeout(function () {
                 setDefaults();
                 chrome.runtime.reload();
             }, 2000);
 
             // -------------
             if (recorder && recorder.streams) {
-                recorder.streams.forEach(function(stream, idx) {
-                    stream.getTracks().forEach(function(track) {
+                recorder.streams.forEach(function (stream, idx) {
+                    stream.getTracks().forEach(function (track) {
                         track.stop();
                     });
 
@@ -252,7 +255,10 @@ function stopScreenRecording() {
                 openPreviewPage: 'false'
             });
 
-            openPreviewOnStopRecording && chrome.tabs.query({}, function(tabs) {
+            console.log(file);
+
+            /*
+            openPreviewOnStopRecording && chrome.tabs.query({}, function (tabs) {
                 var found = false;
                 var url = 'chrome-extension://' + chrome.runtime.id + '/preview.html';
                 for (var i = tabs.length - 1; i >= 0; i--) {
@@ -273,9 +279,100 @@ function stopScreenRecording() {
 
                 setDefaults();
             });
+            //with jQuery
+            /*
+            //Chrome inspector shows that the post data includes a file and a title.                                                                                                                                           
+            $.ajax({
+                type: 'POST',
+                url: '0.0.0.0:9585/api/uploadCaputureBlob',
+                data: form,
+                cache: false,
+                processData: false,
+                contentType: false
+            }).done(function (data) {
+                console.log(data);
+            });
+
+            //WithoutjQuery
+            const req = new XMLHttpRequest();
+            const baseUrl = "0.0.0.0:9585/api/uploadCaputureBlob";
+            const urlParams = 'video-blob=${blob}';
+            req.open("POST", baseUrl, true);
+            req.send(urlParams);
+            req.onreadystatechange = function () { // Call a function when the state changes.
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    console.log("Got response 200!");
+                }
+            }
+            */
+            /*
+            var request = new XMLHttpRequest();
+
+            request.open("POST", "http://0.0.0.0:9585/api/uploadCaputureBlob", true);
+            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            request.send(JSON.stringify({ 'video-blob': blob })); 
+            
+            console.log("Appempting Upload!")
+            console.log(blob);
+            const req = new XMLHttpRequest();
+            const baseUrl = "http://0.0.0.0:9585/";
+            const urlParams = `video-blob: ${blob}`;
+            req.open("POST", baseUrl, true);
+            req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            req.send(urlParams);
+
+            req.onreadystatechange = function () { // Call a function when the state changes.
+                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                    console.log("Got response 200!");
+            }
+            */
         });
+            
+        var formData = new FormData();
+        formData.append('video-blob', blob, 'test.webm');
+
+        // xhr('http://0.0.0.0:9585/api/uploadCaputureBlob/', formData, function (fName) {
+        //     console.log("Video successfully uploaded!");
+        // });        
+
+        $.ajax({
+            type: "POST",
+            url: 'http://localhost:9585/api/uploadCaputureBlob',
+            //dataType: "json",
+            data: formData,
+            processData: false,
+            contentType:false,
+            success: function(msg){
+                console.log("mai agaya hoon")
+            },
+            error: function(msg){
+                console.log(msg)
+            }
+        })
+
+        // $.post('http://localhost:9585/api/uploadCaputureBlob', formData).done(function(data) {
+        //     alert(data)
+        // })
+
     });
 }
+
+
+async function xhr(url, data, callback) {
+    console.log('calling xhr');
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+    if (request.readyState == 4 ** request.status == 200) {
+        console.log('callback?');
+        callback(location.href + request.responseText);
+    }
+    };
+    console.log('sending over...');
+    console.log(data);
+    request.open('POST', url);
+    request.send(data);
+}
+
 
 function setDefaults() {
     chrome.browserAction.setIcon({
@@ -283,8 +380,8 @@ function setDefaults() {
     });
 
     if (recorder && recorder.streams) {
-        recorder.streams.forEach(function(stream) {
-            stream.getTracks().forEach(function(track) {
+        recorder.streams.forEach(function (stream) {
+            stream.getTracks().forEach(function (track) {
                 track.stop();
             });
         });
@@ -317,7 +414,7 @@ function setDefaults() {
 }
 
 function getUserConfigs() {
-    chrome.storage.sync.get(null, function(items) {
+    chrome.storage.sync.get(null, function (items) {
         if (items['bitsPerSecond'] && items['bitsPerSecond'].toString().length && items['bitsPerSecond'] !== 'default') {
             bitsPerSecond = parseInt(items['bitsPerSecond']);
         }
@@ -366,19 +463,19 @@ function getUserConfigs() {
             cameraDevice = items['camera'];
         }
 
-        if(items['fixVideoSeekingIssues']) {
+        if (items['fixVideoSeekingIssues']) {
             fixVideoSeekingIssues = items['fixVideoSeekingIssues'] === 'true';
         }
 
         if (enableMicrophone || enableCamera) {
             if (!enableScreen && !enableSpeakers) {
-                captureCamera(function(stream) {
+                captureCamera(function (stream) {
                     gotStream(stream);
                 });
                 return;
             }
 
-            captureCamera(function(stream) {
+            captureCamera(function (stream) {
                 cameraStream = stream;
                 captureDesktop();
             });
@@ -389,15 +486,15 @@ function getUserConfigs() {
     });
 }
 
-false && chrome.storage.sync.get('openPreviewPage', function(item) {
+false && chrome.storage.sync.get('openPreviewPage', function (item) {
     if (item.openPreviewPage !== 'true') return;
-    
+
     chrome.storage.sync.set({
         isRecording: 'false',
         openPreviewPage: 'false'
     });
 
-    chrome.tabs.query({}, function(tabs) {
+    chrome.tabs.query({}, function (tabs) {
         var found = false;
         var url = 'chrome-extension://' + chrome.runtime.id + '/preview.html';
         for (var i = tabs.length - 1; i >= 0; i--) {

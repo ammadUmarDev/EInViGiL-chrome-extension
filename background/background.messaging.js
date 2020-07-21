@@ -68,6 +68,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         if (message.stopRecording) {
             if(message.RecordRTC_Extension) {
                 stopRecordingCallback = function(file) {
+                    console.log("in stopScreenRecordingCallback");
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         port.postMessage({
@@ -80,7 +81,9 @@ chrome.runtime.onConnect.addListener(function(port) {
                 };
             }
 
+            console.log("in message.stopRecording");
             stopScreenRecording();
+            console.log("stopScreenRecording Called");
             return;
         }
     });
