@@ -45,7 +45,7 @@ function MediaStreamRecorder(mediaStream, config) {
 
     config = config || {
         // bitsPerSecond: 256 * 8 * 1024,
-        mimeType: 'video/webm'
+        mimeType: 'video/h264',
     };
 
     if (config.type === 'audio') {
@@ -93,6 +93,7 @@ function MediaStreamRecorder(mediaStream, config) {
      * recorder.record();
      */
     this.record = function() {
+        console.log("in record")
         // set defaults
         self.blob = null;
         self.clearRecordedData();
@@ -146,11 +147,13 @@ function MediaStreamRecorder(mediaStream, config) {
 
         // Dispatching OnDataAvailable Handler
         mediaRecorder.ondataavailable = function(e) {
+            console.log("In ondataavail")
             if (e.data) {
                 allStates.push('ondataavailable: ' + bytesToSize(e.data.size));
             }
 
             if (typeof config.timeSlice === 'number') {
+                
                 if (e.data && e.data.size && e.data.size > 100) {
                     arrayOfBlobs.push(e.data);
                     updateTimeStamp();

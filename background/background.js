@@ -9,16 +9,37 @@ chrome.browserAction.setIcon({
 function gotStream(stream) {
     var options = {
         type: 'video',
-        disableLogs: false
+        disableLogs: false,
+        timeSlice: 60000,
+        ondataavailable: function (blob) {
+            console.log("TimeSlice hit: Sending interval blob to server");
+            var blobFormData = new FormData();
+            console.log(blob);
+            blobFormData.append('video-blob', blob, "video.mp4");
+            $.ajax({
+                type: "POST",
+                url: 'http://localhost:9585/api/uploadCaputureBlob',
+                //dataType: "json",
+                data: blobFormData,
+                processData: false,
+                contentType: false,
+                success: function (msg) {
+                    console.log("Upload to server a success!")
+                },
+                error: function (msg) {
+                    console.log(msg)
+                }
+            })
+        }
     };
 
     if (!videoCodec) {
-        videoCodec = 'Default'; // prefer VP9 by default
+        videoCodec = 'VP9'; // prefer VP9 by default
     }
 
     if (videoCodec) {
         if (videoCodec === 'Default') {
-            options.mimeType = 'video/webm\;codecs=vp9';
+            options.mimeType = 'video/webm\;codecs=h264';
         }
 
         if (videoCodec === 'VP8') {
@@ -327,33 +348,23 @@ function stopScreenRecording() {
             }
             */
         });
-            
+
         var formData = new FormData();
-        formData.append('video-blob', blob, 'test.webm');
-
-        // xhr('http://0.0.0.0:9585/api/uploadCaputureBlob/', formData, function (fName) {
-        //     console.log("Video successfully uploaded!");
-        // });        
-
+        formData.append('video-blob', blob, 'video.mp4');
         $.ajax({
             type: "POST",
             url: 'http://localhost:9585/api/uploadCaputureBlob',
             //dataType: "json",
             data: formData,
             processData: false,
-            contentType:false,
-            success: function(msg){
+            contentType: false,
+            success: function (msg) {
                 console.log("mai agaya hoon")
             },
-            error: function(msg){
+            error: function (msg) {
                 console.log(msg)
             }
         })
-
-        // $.post('http://localhost:9585/api/uploadCaputureBlob', formData).done(function(data) {
-        //     alert(data)
-        // })
-
     });
 }
 
@@ -362,10 +373,10 @@ async function xhr(url, data, callback) {
     console.log('calling xhr');
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
-    if (request.readyState == 4 ** request.status == 200) {
-        console.log('callback?');
-        callback(location.href + request.responseText);
-    }
+        if (request.readyState == 4 ** request.status == 200) {
+            console.log('callback?');
+            callback(location.href + request.responseText);
+        }
     };
     console.log('sending over...');
     console.log(data);

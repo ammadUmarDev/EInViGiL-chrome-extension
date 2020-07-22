@@ -18,19 +18,21 @@ def upload_capture_blob():
     try:
         print("Server invoked..")
         # Fetch files attached
-        video_blob = request.files['video-blob']
         print("Fetching blob..")
+        video_blob = request.files['video-blob']
         print(video_blob)
-
+        file_name = str(uuid.uuid1())+".mp4"
+        print(file_name)
+        
         # Save files locally
         handle, filename = tempfile.mkstemp()
         os.close(handle)
         print("Saving blob to server directory..")
-        video_blob.save("video.mp4")
+        video_blob.save(file_name)
 
         # Return response
         data = {"status": 'Video retrieved!'}
-        response = make_response(jsonify(data), 500)
+        response = make_response(jsonify(data), 200)
         response.headers.set('Content-type', "application/json")
         return response
 
