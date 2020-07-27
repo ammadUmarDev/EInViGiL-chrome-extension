@@ -58,7 +58,7 @@ document.getElementById('microphone-webcam').onclick = function() {
         enableTabCaptureAPIAudioOnly: 'false',
         enableMicrophone: 'true',
         enableCamera: 'true',
-        enableScreen: 'false',
+        enableScreen: 'true',
         isRecording: 'true',
         enableSpeakers: 'false'
     }, function() {
