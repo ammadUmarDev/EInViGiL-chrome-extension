@@ -6,16 +6,32 @@ chrome.browserAction.setIcon({
     path: 'assets/icon48.png'
 });
 
+function uuidv4() {
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+}
+
+var userUniqueId;
+var blobFormData;
+var timeStamp;
+
 function gotStream(stream) {
+    userUniqueId = uuidv4().toString();
     var options = {
         type: 'video',
         disableLogs: false,
-        timeSlice: 60000,
+        timeSlice: 15000,
         ondataavailable: function (blob) {
             console.log("TimeSlice hit: Sending interval blob to server");
-            var blobFormData = new FormData();
+            blobFormData = new FormData();
             console.log(blob);
+            timeStamp = new Date().valueOf().toString() + ".mp4";
+            blobName = userUniqueId + "-" + timeStamp;
+            console.log(blobName);
             blobFormData.append('video-blob', blob, "video.mp4");
+            blobFormData.append('video-blob-id', blobName);
+            blobFormData.append('session-id', userUniqueId);
             $.ajax({
                 type: "POST",
                 url: 'http://localhost:9585/api/uploadCaputureBlob',
@@ -103,7 +119,6 @@ function gotStream(stream) {
         }
     }
 
-    // fix https://github.com/muaz-khan/RecordRTC/issues/281
     options.ignoreMutedMedia = false;
 
     if (options.mimeType === 'audio/wav') {
@@ -152,8 +167,6 @@ function gotStream(stream) {
     // tell website that recording is started
     startRecordingCallback();
 }
-var form = new FormData();
-
 
 function stopScreenRecording() {
     console.log("in stopScreenRecording");
@@ -166,7 +179,7 @@ function stopScreenRecording() {
     isRecording = false;
 
     chrome.browserAction.setTitle({
-        title: 'Record Your Screen, Tab or Camera'
+        title: 'EInViGiL Virtual Invigilation Assistant'
     });
     chrome.browserAction.setIcon({
         path: 'assets/icon48.png'
@@ -277,89 +290,26 @@ function stopScreenRecording() {
             });
 
             console.log(file);
-
-            /*
-            openPreviewOnStopRecording && chrome.tabs.query({}, function (tabs) {
-                var found = false;
-                var url = 'chrome-extension://' + chrome.runtime.id + '/preview.html';
-                for (var i = tabs.length - 1; i >= 0; i--) {
-                    if (tabs[i].url === url) {
-                        found = true;
-                        chrome.tabs.update(tabs[i].id, {
-                            active: true,
-                            url: url
-                        });
-                        break;
-                    }
-                }
-                if (!found) {
-                    chrome.tabs.create({
-                        url: 'preview.html'
-                    });
-                }
-
-                setDefaults();
-            });
-            //with jQuery
-            /*
-            //Chrome inspector shows that the post data includes a file and a title.                                                                                                                                           
-            $.ajax({
-                type: 'POST',
-                url: '0.0.0.0:9585/api/uploadCaputureBlob',
-                data: form,
-                cache: false,
-                processData: false,
-                contentType: false
-            }).done(function (data) {
-                console.log(data);
-            });
-
-            //WithoutjQuery
-            const req = new XMLHttpRequest();
-            const baseUrl = "0.0.0.0:9585/api/uploadCaputureBlob";
-            const urlParams = 'video-blob=${blob}';
-            req.open("POST", baseUrl, true);
-            req.send(urlParams);
-            req.onreadystatechange = function () { // Call a function when the state changes.
-                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    console.log("Got response 200!");
-                }
-            }
-            */
-            /*
-            var request = new XMLHttpRequest();
-
-            request.open("POST", "http://0.0.0.0:9585/api/uploadCaputureBlob", true);
-            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            request.send(JSON.stringify({ 'video-blob': blob })); 
-            
-            console.log("Appempting Upload!")
-            console.log(blob);
-            const req = new XMLHttpRequest();
-            const baseUrl = "http://0.0.0.0:9585/";
-            const urlParams = `video-blob: ${blob}`;
-            req.open("POST", baseUrl, true);
-            req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            req.send(urlParams);
-
-            req.onreadystatechange = function () { // Call a function when the state changes.
-                if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-                    console.log("Got response 200!");
-            }
-            */
         });
 
-        var formData = new FormData();
-        formData.append('video-blob', blob, 'video.mp4');
+        console.log("Recording terminated: Sending interval blob to server");
+        blobFormData = new FormData();
+        console.log(blob);
+        timeStamp = new Date().valueOf().toString() + ".mp4";
+        blobName = userUniqueId + "-" + timeStamp;
+        console.log(blobName);
+        blobFormData.append('video-blob', blob, "video.mp4");
+        blobFormData.append('video-blob-id', blobName);
+        blobFormData.append('session-id', userUniqueId);
         $.ajax({
             type: "POST",
             url: 'http://localhost:9585/api/uploadCaputureBlob',
             //dataType: "json",
-            data: formData,
+            data: blobFormData,
             processData: false,
             contentType: false,
             success: function (msg) {
-                console.log("mai agaya hoon")
+                console.log("Upload to server a success!")
             },
             error: function (msg) {
                 console.log(msg)
@@ -367,23 +317,6 @@ function stopScreenRecording() {
         })
     });
 }
-
-
-async function xhr(url, data, callback) {
-    console.log('calling xhr');
-    var request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (request.readyState == 4 ** request.status == 200) {
-            console.log('callback?');
-            callback(location.href + request.responseText);
-        }
-    };
-    console.log('sending over...');
-    console.log(data);
-    request.open('POST', url);
-    request.send(data);
-}
-
 
 function setDefaults() {
     chrome.browserAction.setIcon({
