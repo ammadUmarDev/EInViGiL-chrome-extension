@@ -139,6 +139,7 @@ a:active {
     overflow: hidden;
     width: 250px;
     border-radius: 20px;
+    margin-top: -5px;
 }
 .button-3e>.fa {
     left: auto;
@@ -257,12 +258,14 @@ html, body {
     padding: 0!important;
 }
 
-h1{
+h1 {
     font-family: sans-serif;
-    font-size: 20px;
+    font-size: 30px;
     color: #646d82;
     text-align: center;
-    text-transform: uppercase;
+    text-transform: initial;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .col-md-12{
@@ -273,7 +276,7 @@ h1{
     text-align: -webkit-center;
 }
 
-.icons-app{
-    width:20px; 
-    margin: 5px 10px 5px 10px;
+.icons-app {
+    width: 20px;
+    margin: -20px 10px 0px 10px;
 }
