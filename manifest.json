@@ -76,10 +76,5 @@
    "content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'",
    "web_accessible_resources":[  
       "assets/icon48.png"
-   ],
-   "options_ui":{  
-      "page":"options.html",
-      "chrome_style":false,
-      "open_in_tab": true
-   }
+   ]
 }

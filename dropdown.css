@@ -5,10 +5,6 @@
     -user-drag: none;
   }
 
-  h1{
-    font-size: 35px;;
-  }
-
   @font-face {
     font-family: 'Custom_Font';
     src: local('.SFNSText-Light'),

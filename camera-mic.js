@@ -1,4 +1,4 @@
-document.write('<h1 style="font-family: Courier New; font-size: 30px; color:red;margin-top:200px;">The purpose of this page is to access your camera and microphone.</h1>');
+document.write('<div class="container app"><div class="row"><div class="col-md-12"><h1>EInViGiL</h1></div></div><div class="row"><div class="col-md-12"><h2>Give access to camera, microphone and screen.</h2></div></div></div>');
 
 var port = chrome.runtime.connect();
 
