@@ -41,7 +41,7 @@ def upload_capture_blob():
         blob_path = Path(blob_path_str)
         blob_path.mkdir(parents=True, exist_ok=True)
 
-        with open(blob_path_str + "/" + session_id + ".txt","a+") as f:
+        with open(blob_path_str + "/" + session_id + ".txt", "a+") as f:
             f.write(file_name)
             f.write("\n")
 
